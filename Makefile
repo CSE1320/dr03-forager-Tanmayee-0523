@@ -2,9 +2,9 @@
 ####################### Makefile Template ##############################
 ########################################################################
 # Student settings
-NAME = YOURNAME
-SID = YOURSID
-EMAIL = YOURUTAEMAIL
+NAME = TANMAYEE SIDDINENI
+SID = 1002053045
+EMAIL = txs3045@mavs.uta.edu
 SEMESTER = SPRING2025
 PROJECT=PROJ03
  
