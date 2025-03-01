@@ -1,6 +1,6 @@
-// app/components/Filter.jsx
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 
 const FilterButton = ({ label, isActive, onClick }) => {
   return (
@@ -23,7 +23,14 @@ const Filter = () => {
   const [activeCategories, setActiveCategories] = useState([]);
 
   const tags = ["Favorites", "Recent"];
-  const regions = ["Texas", "North America", "South America", "Asia", "Europe", "Africa"];
+  const regions = [
+    "Texas",
+    "North America",
+    "South America",
+    "Asia",
+    "Europe",
+    "Africa",
+  ];
   const categories = ["Poisonous", "Medicinal", "Mythical", "Good for Broths"];
 
   const toggleFilter = (filterList, setFilterList, item) => {
@@ -37,7 +44,9 @@ const Filter = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-semibold text-gray-800">FILTER</h3>
-        <button className="text-gray-500 hover:text-gray-700">✕</button>
+        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
+          ✕
+        </Link>
       </div>
 
       {/* Tags */}
@@ -79,7 +88,9 @@ const Filter = () => {
               key={category}
               label={category}
               isActive={activeCategories.includes(category)}
-              onClick={() => toggleFilter(activeCategories, setActiveCategories, category)}
+              onClick={() =>
+                toggleFilter(activeCategories, setActiveCategories, category)
+              }
             />
           ))}
         </div>
