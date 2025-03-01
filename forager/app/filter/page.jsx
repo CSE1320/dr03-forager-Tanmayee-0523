@@ -1,6 +1,6 @@
 // app/page.jsx
 import React from "react";
-import Filter from "../components/Filter";
+import Filter from "../../components/Filter";
 
 const Home = () => {
   return (
