@@ -1,36 +1,36 @@
 "use client";
 import { useState } from "react";
-import NavBar from "../../components/NavBar"; // Adjust the path as necessary
-import SearchBar from "../../components/SearchBar"; // Import the SearchBar component
+import Link from "next/link";
+import NavBar from "../../components/NavBar";
+import SearchBar from "../../components/SearchBar";
 
 export default function DashboardPage() {
   const [searchResults, setSearchResults] = useState([]);
 
   const handleSearch = (query) => {
     console.log("Searching for:", query);
-    // Placeholder logic for search results
-    setSearchResults([`Result for "${query}"`]); 
+    setSearchResults([`Result for "${query}"`]);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar at the top */}
+    <div className="min-h-screen bg-gray-100 pb-20">
       <NavBar />
-
-      {/* Dashboard Content */}
       <div className="p-6">
-        {/* Search Bar with filter button linked to /filter */}
         <SearchBar onSearch={handleSearch} />
-
-        {/* Display search results */}
+        {/* Temporary Button to navigate to Mushroom Page */}
+        <div className="mt-4">
+          <Link href="/mushroom">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors">
+              Go to Mushroom Page
+            </button>
+          </Link>
+        </div>
         <div className="mt-4">
           <h2 className="text-lg font-semibold">Results:</h2>
           {searchResults.length === 0 ? (
             <p className="text-gray-500">No results found.</p>
           ) : (
-            searchResults.map((result, index) => (
-              <p key={index}>{result}</p>
-            ))
+            searchResults.map((result, index) => <p key={index}>{result}</p>)
           )}
         </div>
       </div>

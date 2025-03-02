@@ -5,25 +5,45 @@ export default function CameraPage() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [error, setError] = useState(null);
+  const [stream, setStream] = useState(null);
 
-  // Request camera access when the component mounts
   useEffect(() => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
-        .then((stream) => {
+        .then((mediaStream) => {
+          setStream(mediaStream); // Save stream for cleanup
           if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            videoRef.current.play();
+            videoRef.current.srcObject = mediaStream;
+            // Use onloadedmetadata with a check to ensure videoRef.current is valid
+            videoRef.current.onloadedmetadata = () => {
+              if (videoRef.current) {
+                videoRef.current
+                  .play()
+                  .catch((err) =>
+                    console.error("Error during video play:", err)
+                  );
+              }
+            };
           }
         })
         .catch((err) => {
           console.error("Error accessing camera:", err);
+          setError("Error accessing camera: " + err.message);
         });
+    } else {
+      setError("Camera not supported in this browser.");
     }
+
+    // Cleanup: stop all media tracks when the component unmounts
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, []);
 
-  // Capture the current frame from the video stream
   const capturePhoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -40,6 +60,7 @@ export default function CameraPage() {
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-md flex flex-col items-center">
       <h1 className="text-xl font-semibold mb-4">Take a Mushroom Picture</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="w-full relative">
         <video
           ref={videoRef}
@@ -47,7 +68,6 @@ export default function CameraPage() {
           autoPlay
           playsInline
         />
-        {/* Hidden canvas used for capturing the photo */}
         <canvas ref={canvasRef} style={{ display: "none" }} />
       </div>
       <button
