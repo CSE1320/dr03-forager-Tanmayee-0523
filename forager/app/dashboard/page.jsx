@@ -1,36 +1,83 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import NavBar from "../../components/NavBar";
 import SearchBar from "../../components/SearchBar";
+import Polaroid from "../../components/Polaroid";
+import { mushrooms } from "../../data/development";
 
 export default function DashboardPage() {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilters, setActiveFilters] = useState({
+    tags: [],
+    regions: [],
+    categories: [],
+  });
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const tagsParam = searchParams.get("tags");
+    const regionsParam = searchParams.get("regions");
+    const categoriesParam = searchParams.get("categories");
+    const tags = tagsParam ? JSON.parse(tagsParam) : [];
+    const regions = regionsParam ? JSON.parse(regionsParam) : [];
+    const categories = categoriesParam ? JSON.parse(categoriesParam) : [];
+    setActiveFilters({
+      tags,
+      regions,
+      categories,
+    });
+  }, [searchParams]);
 
   const handleSearch = (query) => {
-    console.log("Searching for:", query);
-    setSearchResults([`Result for "${query}"`]);
+    setSearchTerm(query.toLowerCase());
   };
+
+  const matchesFilters = (mushroom) => {
+    const { tags, regions, categories } = activeFilters;
+    if (tags.length > 0 && !tags.some((tag) => mushroom.tags.includes(tag))) {
+      return false;
+    }
+    if (
+      regions.length > 0 &&
+      !regions.some((region) => mushroom.regions.includes(region))
+    ) {
+      return false;
+    }
+    if (
+      categories.length > 0 &&
+      !categories.some((cat) => mushroom.categories.includes(cat))
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const filteredMushrooms = mushrooms.filter((mushroom) => {
+    const matchesSearch = mushroom.name.toLowerCase().includes(searchTerm);
+    const passesFilters = matchesFilters(mushroom);
+    return matchesSearch && passesFilters;
+  });
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">
       <NavBar />
       <div className="p-6">
         <SearchBar onSearch={handleSearch} />
-        {/* Temporary Button to navigate to Mushroom Page */}
-        <div className="mt-4">
-          <Link href="/mushroom">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors">
-              Go to Mushroom Page
-            </button>
-          </Link>
-        </div>
-        <div className="mt-4">
-          <h2 className="text-lg font-semibold">Results:</h2>
-          {searchResults.length === 0 ? (
-            <p className="text-gray-500">No results found.</p>
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
+          {filteredMushrooms.length === 0 ? (
+            <p className="text-gray-500">No mushrooms found.</p>
           ) : (
-            searchResults.map((result, index) => <p key={index}>{result}</p>)
+            filteredMushrooms.map((mushroom) => (
+              <Polaroid
+                key={mushroom.id}
+                imageSrc={mushroom.imageSrc}
+                name={mushroom.name}
+                confidence={mushroom.confidence}
+              />
+            ))
           )}
         </div>
       </div>

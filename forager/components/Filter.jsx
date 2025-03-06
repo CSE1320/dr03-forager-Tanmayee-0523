@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FilterButton = ({ label, isActive, onClick }) => {
   return (
@@ -22,6 +22,18 @@ const Filter = () => {
   const [activeRegions, setActiveRegions] = useState([]);
   const [activeCategories, setActiveCategories] = useState([]);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const tagsParam = searchParams.get("tags");
+    const regionsParam = searchParams.get("regions");
+    const categoriesParam = searchParams.get("categories");
+    setActiveTags(tagsParam ? JSON.parse(tagsParam) : []);
+    setActiveRegions(regionsParam ? JSON.parse(regionsParam) : []);
+    setActiveCategories(categoriesParam ? JSON.parse(categoriesParam) : []);
+  }, [searchParams]);
+
   const tags = ["Favorites", "Recent"];
   const regions = [
     "Texas",
@@ -39,14 +51,21 @@ const Filter = () => {
     );
   };
 
+  const applyFilters = () => {
+    const params = new URLSearchParams();
+    if (activeTags.length) params.set("tags", JSON.stringify(activeTags));
+    if (activeRegions.length) params.set("regions", JSON.stringify(activeRegions));
+    if (activeCategories.length) params.set("categories", JSON.stringify(activeCategories));
+    router.push(`/dashboard?${params.toString()}`);
+  };
+
   return (
-    <div className="w-64 p-4 bg-gray-100 rounded-lg shadow-md">
-      {/* Header */}
+    <div className="w-64 p-4 bg-white border border-gray-300 rounded-lg shadow-sm">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-semibold text-gray-800">FILTER</h3>
-        <Link href="/dashboard" className="text-gray-500 hover:text-gray-700">
+        <button onClick={applyFilters} className="text-gray-500 hover:text-gray-700">
           ✕
-        </Link>
+        </button>
       </div>
 
       {/* Tags */}
