@@ -24,41 +24,33 @@ export default function DashboardPage() {
     const tags = tagsParam ? JSON.parse(tagsParam) : [];
     const regions = regionsParam ? JSON.parse(regionsParam) : [];
     const categories = categoriesParam ? JSON.parse(categoriesParam) : [];
-    setActiveFilters({
-      tags,
-      regions,
-      categories,
-    });
+    setActiveFilters({ tags, regions, categories });
   }, [searchParams]);
 
   const handleSearch = (query) => {
     setSearchTerm(query.toLowerCase());
   };
 
-  const matchesFilters = (mushroom) => {
-    const { tags, regions, categories } = activeFilters;
-    if (tags.length > 0 && !tags.some((tag) => mushroom.tags.includes(tag))) {
-      return false;
-    }
-    if (
-      regions.length > 0 &&
-      !regions.some((region) => mushroom.regions.includes(region))
-    ) {
-      return false;
-    }
-    if (
-      categories.length > 0 &&
-      !categories.some((cat) => mushroom.categories.includes(cat))
-    ) {
-      return false;
-    }
-    return true;
+  const handlePolaroidClick = (mushroom) => {
+    const query = new URLSearchParams({
+      id: mushroom.id,
+      name: mushroom.name,
+      imageSrc: mushroom.imageSrc,
+      confidence: mushroom.confidence || "",
+    }).toString();
+    router.push(`/mushroom?${query}`);  // Update URL to mushroom page with query params
   };
 
   const filteredMushrooms = mushrooms.filter((mushroom) => {
     const matchesSearch = mushroom.name.toLowerCase().includes(searchTerm);
-    const passesFilters = matchesFilters(mushroom);
-    return matchesSearch && passesFilters;
+    const matchesFilters = () => {
+      const { tags, regions, categories } = activeFilters;
+      if (tags.length > 0 && !tags.some((tag) => mushroom.tags.includes(tag))) return false;
+      if (regions.length > 0 && !regions.some((region) => mushroom.regions.includes(region))) return false;
+      if (categories.length > 0 && !categories.some((cat) => mushroom.categories.includes(cat))) return false;
+      return true;
+    };
+    return matchesSearch && matchesFilters();
   });
 
   return (
@@ -76,6 +68,7 @@ export default function DashboardPage() {
                 imageSrc={mushroom.imageSrc}
                 name={mushroom.name}
                 confidence={mushroom.confidence}
+                onClick={() => handlePolaroidClick(mushroom)}  // Click event to pass data
               />
             ))
           )}

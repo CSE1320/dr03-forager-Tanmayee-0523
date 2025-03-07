@@ -1,32 +1,45 @@
-// data/development.js
-
 // Array of mushroom objects
 const mushrooms = [
     {
       id: 1,
       name: "Death Cap",
-      imageSrc: "/images/paddy-straw.jpg",
+      imageSrc: "/icons/death-cap.jpg",
       tags: ["Favorites"],
       regions: ["North America"],
-      categories: ["Medicinal"],
+      categories: ["Poisonous"],
     },
     {
       id: 2,
       name: "Paddy Straw",
-      imageSrc: "/images/amanita.jpg",
+      imageSrc: "/icons/paddy straw.jpg",
       tags: ["Recent"],
       regions: ["Europe"],
-      categories: ["Poisonous"],
+      categories: ["Mythical"],
     },
     {
       id: 3,
       name: "Destroying Angel",
-      imageSrc: "/images/shiitake.jpg",
+      imageSrc: "/icons/destroying angel.jpg",
       tags: ["Favorites"],
       regions: ["Asia"],
       categories: ["Good for Broths", "Medicinal"],
     },
-    // ... add more mushrooms as needed
+    {
+      id: 4,
+      name: "False Death Cap",
+      imageSrc: "/icons/false death cap.jpg",
+      tags: ["Favorites"],
+      regions: ["Asia"],
+      categories: ["Good for Broths", "Medicinal"],
+    },
+    {
+      id: 5,
+      name: "Puffball",
+      imageSrc: "/icons/puffball.jpg",
+      tags: ["Recents"],
+      regions: ["Europe", "North America"],
+      categories: [],
+    },
   ];
   
 
@@ -37,9 +50,6 @@ const mushrooms = [
     icon: "/icons/icon_warning.svg",
     message: "This is a toxic species, proceed with caution.",
   };
-  
-  // Two flavors of exporting:
-  // export default mushrooms; // If you want a default export
   
   // More than one export (named exports):
   export { mushrooms, warningMessage };
