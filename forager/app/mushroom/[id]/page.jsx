@@ -2,8 +2,8 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { mushrooms } from "../../../data/development"; // Adjust the path if needed
-import Polaroid from "../../../components/Polaroid"; // Adjust the path if needed
+import { mushrooms } from "../../../data/development";
+import Polaroid from "../../../components/Polaroid"; 
 
 export default function MushroomDetailPage() {
   const { id } = useParams();
@@ -23,7 +23,7 @@ export default function MushroomDetailPage() {
   return (
     <div className="min-h-screen bg-gray-100 pb-20">
       {/* Top Bar */}
-      <div className="bg-[#397367] text-white p-4 rounded-b-2xl flex items-center">
+      <div className="bg-customGreen text-white p-4 rounded-b-2xl flex items-center">
         <Link href="/dashboard" className="mr-2 hover:opacity-80">
           &larr; Back
         </Link>

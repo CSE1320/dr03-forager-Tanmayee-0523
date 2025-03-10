@@ -1,17 +1,27 @@
+// app/components/mushroom/page.jsx
 "use client";
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Polaroid from "@/components/Polaroid";
-import MushroomHeader from "@/components/MushroomHeader";
-import WarningAlert from "@/components/WarningAlert"; // Import the warning component
-import { warningMessage } from "@/data/development"; // Import the warning message data
+import Polaroid from "../../components/Polaroid";
+import MushroomHeader from "../../components/MushroomHeader";
+import WarningAlert from "../../components/WarningAlert";
+import { mushrooms, warningMessage } from "../../data/development";
+import ReportError from "../../components/ReportError";
+import PlusButton from "../../components/PlusButton";
+import FastFacts from "../../components/FastFacts";
+import Description from "../../components/Description";
 
 export default function MushroomPage() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const imageSrc = searchParams.get("imageSrc");
   const confidence = searchParams.get("confidence");
+  const mushroomId = searchParams.get("id");
+
+  // Find the selected mushroom from the dataset
+  const selectedMushroom = mushrooms.find((m) => m.name === name);
+   const selectedMushroomID = mushrooms.find((m) => m.id == mushroomId);
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">
@@ -20,21 +30,58 @@ export default function MushroomPage() {
 
       {/* Page Content */}
       <div className="p-6 flex flex-col items-center">
-        {/* Show Warning Message */}
-        <WarningAlert message={warningMessage.message} icon={warningMessage.icon} />
+        {/* Show Warning Message only if the mushroom is poisonous */}
+        {selectedMushroom?.categories.includes("Poisonous") && (
+          <>
+            <div className="mb-4 w-48">
+              <ReportError />
+            </div>
+            <div className="mb-4 w-48">
+              <WarningAlert
+                message={warningMessage.message}
+                icon={warningMessage.icon}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Compare link navigating to /comparison */}
+        <div className="w-48 flex justify-end">
+          <Link
+            href="/comparison"
+            className="mt-4 text-gray-500 hover:text-gray-700"
+          >
+            Compare &gt;
+          </Link>
+        </div>
 
         {imageSrc ? (
-          <Polaroid imageSrc={imageSrc} name={name} confidence={confidence} />
+          <div className="w-fit"> {/* Adjust width here */}
+            <Polaroid
+              imageSrc={imageSrc}
+              name={name}
+              confidence={confidence}
+            />
+          </div>
         ) : (
           <p className="text-gray-500">Select a mushroom from the dashboard.</p>
         )}
-
-        {/* Compare button navigating to /comparison */}
-        <Link href="/comparison">
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors">
-            Compare
-          </button>
-        </Link>
+        <div className="w-48 flex justify-end mt-4">
+          <PlusButton />
+        </div>
+        {selectedMushroomID && (
+          <>
+           <FastFacts
+                capDiameter={selectedMushroomID.capDiameter}
+                gillColor={selectedMushroomID.gillColor}
+                stemColor={selectedMushroomID.stemColor}
+                habitat={selectedMushroomID.habitat}
+              />
+              <div className="w-48 flex justify-middle">
+             <Description description={selectedMushroomID.description} />
+             </div>
+          </>
+        )}
       </div>
     </div>
   );
