@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function CameraPage() {
+const CameraComponent = ({ onCapture }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -54,12 +54,15 @@ export default function CameraPage() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL("image/png");
       setCapturedImage(dataUrl);
+
+      // Pass the captured image to the parent via callback
+      if (onCapture) onCapture(dataUrl);
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-md flex flex-col items-center">
-      <h1 className="text-xl font-semibold mb-4">Take a Mushroom Picture</h1>
+      <h1 className="text-xl text-black font-semibold mb-4">Take a Mushroom Picture</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="w-full relative">
         <video
@@ -88,4 +91,6 @@ export default function CameraPage() {
       )}
     </div>
   );
-}
+};
+
+export default CameraComponent;

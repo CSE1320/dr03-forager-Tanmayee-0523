@@ -5,6 +5,7 @@ import NavBar from "../../components/NavBar";
 import SearchBar from "../../components/SearchBar";
 import Polaroid from "../../components/Polaroid";
 import { mushrooms } from "../../data/development";
+import DashboardTitle from "../../components/DashboardTitle";
 
 export default function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,23 +39,27 @@ export default function DashboardPage() {
       imageSrc: mushroom.imageSrc,
       confidence: mushroom.confidence || "",
     }).toString();
-    router.push(`/mushroom?${query}`);  // Update URL to mushroom page with query params
+    router.push(`/mushroom?${query}`); // Update URL to mushroom page with query params
   };
 
-  const filteredMushrooms = mushrooms.filter((mushroom) => {
-    const matchesSearch = mushroom.name.toLowerCase().includes(searchTerm);
-    const matchesFilters = () => {
-      const { tags, regions, categories } = activeFilters;
-      if (tags.length > 0 && !tags.some((tag) => mushroom.tags.includes(tag))) return false;
-      if (regions.length > 0 && !regions.some((region) => mushroom.regions.includes(region))) return false;
-      if (categories.length > 0 && !categories.some((cat) => mushroom.categories.includes(cat))) return false;
-      return true;
-    };
-    return matchesSearch && matchesFilters();
-  });
+  // Dashboard Component
+  const filteredMushrooms = mushrooms
+    .filter((m) => m.id !== 6) // Excluding the special mushroom
+    .filter((mushroom) => {
+      const matchesSearch = mushroom.name.toLowerCase().includes(searchTerm);
+      const matchesFilters = () => {
+        const { tags, regions, categories } = activeFilters;
+        if (tags.length > 0 && !tags.some((tag) => mushroom.tags.includes(tag))) return false;
+        if (regions.length > 0 && !regions.some((region) => mushroom.regions.includes(region))) return false;
+        if (categories.length > 0 && !categories.some((cat) => mushroom.categories.includes(cat))) return false;
+        return true;
+      };
+      return matchesSearch && matchesFilters();
+    });
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">
+      <DashboardTitle /> {/* Add DashboardTitle here */}
       <NavBar />
       <div className="p-6">
         <SearchBar onSearch={handleSearch} />
@@ -68,7 +73,7 @@ export default function DashboardPage() {
                 imageSrc={mushroom.imageSrc}
                 name={mushroom.name}
                 confidence={mushroom.confidence}
-                onClick={() => handlePolaroidClick(mushroom)}  // Click event to pass data
+                onClick={() => handlePolaroidClick(mushroom)}
               />
             ))
           )}

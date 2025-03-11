@@ -5,7 +5,7 @@ import { FaHome, FaCamera } from "react-icons/fa";
 
 export default function NavBar() {
   return (
-    <nav className="fixed bottom-0 left-0 w-full bg-[#397367] rounded-t-2xl p-4 flex flex-col items-center z-50">
+    <nav className="fixed bottom-0 left-0 w-full bg-customGreen rounded-t-2xl p-4 flex flex-col items-center z-50">
       {/* Icon Row */}
       <div className="flex items-center justify-around w-full max-w-sm">
         <Link href="/mushroom" className="text-white hover:opacity-80">
@@ -14,7 +14,7 @@ export default function NavBar() {
         <Link href="/dashboard" className="text-green-200 hover:opacity-80">
           <FaHome size={24} />
         </Link>
-        <Link href="/photos" className="text-white hover:opacity-80">
+        <Link href="/photosearch" className="text-white hover:opacity-80">
           <FaCamera size={24} />
         </Link>
       </div>
